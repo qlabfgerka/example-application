@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskModule } from './controllers/task/task.module';
 import { UserModule } from './controllers/user/user.module';
+import { DtoFunctionsModule } from './services/dto-functions/dto-functions.module';
 
 @Module({
   imports: [
@@ -23,8 +24,8 @@ import { UserModule } from './controllers/user/user.module';
     }),
     TaskModule,
     UserModule,
+    DtoFunctionsModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}

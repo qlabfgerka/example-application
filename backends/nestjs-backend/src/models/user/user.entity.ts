@@ -1,5 +1,5 @@
 import { Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { TaskEntity } from '../task/task.entity';
+import { TaskDTO, TaskEntity } from '../task/task.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -8,4 +8,9 @@ export class UserEntity {
 
   @OneToMany(() => TaskEntity, (task) => task.user)
   tasks: Array<TaskEntity>;
+}
+
+export class UserDTO {
+  id: number | undefined | null = null;
+  tasks?: Array<TaskDTO>;
 }
