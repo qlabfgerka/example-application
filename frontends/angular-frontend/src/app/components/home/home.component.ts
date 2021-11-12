@@ -13,6 +13,7 @@ import { TaskService } from 'src/app/services/task/task.service';
 })
 export class HomeComponent implements OnInit {
   public taskForm: FormGroup;
+  public tasks: Array<TaskDTO>;
 
   constructor(
     private readonly userService: UserService,
@@ -34,6 +35,13 @@ export class HomeComponent implements OnInit {
           localStorage.setItem('USER_ID', user.id.toString());
         });
     }
+
+    this.taskService
+      .getTasks(+localStorage.getItem('USER_ID'))
+      .pipe(take(1))
+      .subscribe((tasks: Array<TaskDTO>) => {
+        this.tasks = tasks;
+      });
   }
 
   public createTask(): void {
@@ -47,7 +55,7 @@ export class HomeComponent implements OnInit {
         .createTask(task, +localStorage.getItem('USER_ID'))
         .pipe(take(1))
         .subscribe((newTask: TaskDTO) => {
-          console.log(newTask);
+          this.tasks.push(newTask);
         });
     }
   }

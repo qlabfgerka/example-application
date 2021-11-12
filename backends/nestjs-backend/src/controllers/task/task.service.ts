@@ -20,4 +20,17 @@ export class TaskService {
     task.user = await this.usersRepository.findOne(userId);
     return await this.tasksRepository.save(task);
   }
+
+  public async getTasks(userId: number): Promise<Array<TaskEntity>> {
+    return await this.tasksRepository
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.user', 'user')
+      .where(`user.id = ${userId}`)
+      .select([
+        'task.id as id',
+        'task.title as title',
+        'task.description as description',
+      ])
+      .execute();
+  }
 }

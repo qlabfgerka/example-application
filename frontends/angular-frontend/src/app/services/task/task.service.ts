@@ -17,4 +17,10 @@ export class TaskService {
       userId,
     });
   }
+
+  public getTasks(userId: number): Observable<Array<TaskDTO>> {
+    return this.httpClient.get<Array<TaskDTO>>(
+      `${this.hostname}/task/${userId}`
+    );
+  }
 }
