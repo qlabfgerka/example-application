@@ -14,6 +14,7 @@ import { TaskService } from 'src/app/services/task/task.service';
 export class HomeComponent implements OnInit {
   public taskForm: FormGroup;
   public tasks: Array<TaskDTO>;
+  public isEditing: boolean = false;
 
   constructor(
     private readonly userService: UserService,
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit {
     this.taskForm = this.formBuilder.group({
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
+      id: ['', []],
     });
 
     if (!localStorage.getItem('USER_ID')) {
@@ -58,6 +60,48 @@ export class HomeComponent implements OnInit {
           this.tasks.push(newTask);
         });
     }
+  }
+
+  public removeTask(taskId: number, index: number): void {
+    this.taskService
+      .removeTask(taskId)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.tasks.splice(index, 1);
+      });
+  }
+
+  public editTask(): void {
+    if (this.taskForm.valid) {
+      const index = this.tasks.indexOf(
+        this.tasks.find((task) => task.id === +this.taskForm.get('id').value)
+      );
+
+      const task: TaskDTO = {
+        title: this.taskForm.get('title').value,
+        description: this.taskForm.get('description').value,
+        id: +this.taskForm.get('id').value,
+      };
+
+      this.taskService
+        .editTask(task)
+        .pipe(take(1))
+        .subscribe((updated: TaskDTO) => {
+          this.tasks[index] = updated;
+        });
+    }
+  }
+
+  public toggleEdit(task: TaskDTO): void {
+    this.isEditing = !this.isEditing;
+
+    if (this.isEditing) {
+      this.taskForm.patchValue({
+        title: task.title,
+        description: task.description,
+        id: task.id,
+      });
+    } else this.taskForm.reset();
   }
 
   public get errorControl() {

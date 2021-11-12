@@ -34,4 +34,19 @@ export class TaskService {
       .execute();
     return this.dtoFunctions.tasksToDTO(tasks);
   }
+
+  public async removeTask(taskId: number): Promise<void> {
+    await this.tasksRepository.delete(taskId);
+    return;
+  }
+
+  public async editTask(task: TaskDTO): Promise<TaskDTO> {
+    const update: TaskEntity = await this.tasksRepository.findOne(task.id);
+    update.title = task.title;
+    update.description = task.description;
+
+    await this.tasksRepository.save(update);
+
+    return this.dtoFunctions.taskToDTO(update);
+  }
 }

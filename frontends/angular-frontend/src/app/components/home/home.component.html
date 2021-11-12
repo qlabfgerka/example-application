@@ -2,7 +2,7 @@
   <form
     class="form"
     [formGroup]="taskForm"
-    (ngSubmit)="createTask()"
+    (ngSubmit)="isEditing ? editTask() : createTask()"
     *ngIf="taskForm"
   >
     <h1 class="center-text">Create Task</h1>
@@ -35,14 +35,14 @@
         type="submit"
         [disabled]="!taskForm.valid"
       >
-        CREATE TASK
+        {{ isEditing ? "EDIT TASK" : "CREATE TASK" }}
       </button>
     </div>
   </form>
 
   <div class="break"></div>
 
-  <mat-card *ngFor="let task of tasks" class="card margin">
+  <mat-card *ngFor="let task of tasks; let i = index" class="card margin">
     <mat-card-header>
       <mat-card-title>{{ task.title }}</mat-card-title>
     </mat-card-header>
@@ -51,5 +51,11 @@
         {{ task.description }}
       </p>
     </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="toggleEdit(task)">EDIT</button>
+      <button mat-button color="warn" (click)="removeTask(task.id, i)">
+        DELETE
+      </button>
+    </mat-card-actions>
   </mat-card>
 </div>

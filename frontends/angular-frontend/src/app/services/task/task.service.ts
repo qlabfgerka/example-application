@@ -23,4 +23,12 @@ export class TaskService {
       `${this.hostname}/task/${userId}`
     );
   }
+
+  public removeTask(taskId: number): Observable<void> {
+    return this.httpClient.delete<void>(`${this.hostname}/task/${taskId}`);
+  }
+
+  public editTask(task: TaskDTO): Observable<TaskDTO> {
+    return this.httpClient.put<TaskDTO>(`${this.hostname}/task`, { task });
+  }
 }
