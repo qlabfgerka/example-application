@@ -1,0 +1,42 @@
+<div class="flexbox">
+  <form
+    class="form"
+    [formGroup]="taskForm"
+    (ngSubmit)="createTask()"
+    *ngIf="taskForm"
+  >
+    <h1 class="center-text">Create Task</h1>
+    <div class="break"></div>
+
+    <mat-form-field class="wide" appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+      <mat-error *ngIf="errorControl.title.errors?.required">
+        Please enter a title.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="break"></div>
+
+    <mat-form-field class="wide" appearance="fill">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" />
+      <mat-error *ngIf="errorControl.description.errors?.required">
+        Please enter a description.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="break"></div>
+
+    <div class="flexbox">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!taskForm.valid"
+      >
+        CREATE TASK
+      </button>
+    </div>
+  </form>
+</div>
