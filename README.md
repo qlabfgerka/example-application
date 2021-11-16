@@ -16,11 +16,27 @@ Enter the `frontends/angular-frontend` directory and run `ng serve`
 Enter the `backends/nestjs-backend` directory and run `npm run start:dev`
 
 **NOTE!**
-NestJS requires a .env file with the following properties:
+NestJS requires a `.env` file with the following properties:
 ```
 POSTGRESQL_HOST = '...'
 POSTGRESQL_PORT = ...
 POSTGRESQL_USERNAME = '...'
 POSTGRESQL_PASSWORD = '...'
 POSTGRESQL_DATABASE = '...'
+```
+
+#### Spring Boot
+Run the SpringBootBackendApplication inside IntelliJ IDEA.
+
+**NOTE!**
+Spring Boot requires an `application.properties` file with the following properties:
+```
+server.port=3000
+spring.datasource.url=...
+spring.datasource.username=...
+spring.datasource.password=...
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
+spring.jpa.properties.hibernate.format_sql=true
 ```
