@@ -40,3 +40,26 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
 spring.jpa.properties.hibernate.format_sql=true
 ```
+
+#### Quarkus
+Run Quarkus with:
+`./mvnw compile quarkus:dev`
+
+**NOTE!**
+Quarkus requires an `application.properties` file with the following properties:
+```
+quarkus.http.port=3000
+
+quarkus.datasource.jdbc.url=...
+quarkus.datasource.username=...
+quarkus.datasource.password=...
+quarkus.datasource.db-kind=postgresql
+```
+
+And optionally this for CORS:
+```
+quarkus.http.cors=true
+quarkus.http.cors.origins=*
+quarkus.http.cors.methods=GET, POST, PUT, DELETE
+quarkus.http.cors.exposed-headers=Content-Disposition
+```
