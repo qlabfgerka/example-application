@@ -4,6 +4,7 @@ import 'package:flutter_frontend/models/task/task.dart';
 import 'package:flutter_frontend/services/task/task.service.dart';
 import 'package:flutter_frontend/services/user/user.service.dart';
 import 'package:flutter_frontend/widgets/task_card.dart';
+import 'package:flutter_frontend/widgets/task_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -16,6 +17,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final TaskService taskService = TaskService();
   final UserService userService = UserService();
+  late int userId;
   Future<List<Task>>? tasks;
 
   @override
@@ -24,38 +26,52 @@ class _HomeState extends State<Home> {
     _setup();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text('Tasks'),
+      ),
+      body: Column(children: [
+        TaskForm((val) => onCreateTask(val)),
+        FutureBuilder<List<Task>>(
+          future: tasks,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return TaskCard(snapshot, (val) => onDeletePress(val));
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
+      ]),
+    );
+  }
+
   void _setup() async {
     final prefs = await SharedPreferences.getInstance();
     if (prefs.getInt('USER_ID') == null) {
       prefs.setInt('USER_ID', (await userService.createUser()).id as int);
     }
-    tasks = taskService.getTasks(prefs.getInt('USER_ID') as int);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tasks'),
-      ),
-      body: FutureBuilder<List<Task>>(
-        future: tasks,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return TaskCard(snapshot, (val) => onDeletePress(val));
-          } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
-          }
-          return const CircularProgressIndicator();
-        },
-      ),
-    );
+    userId = prefs.getInt('USER_ID') as int;
+    getTasks();
   }
 
   void onDeletePress(val) {
+    taskService.removeTask(val);
+    getTasks();
+  }
+
+  void onCreateTask(val) {
+    taskService.createTask(val, userId);
+    getTasks();
+  }
+
+  void getTasks() async {
     setState(() {
-      taskService.removeTask(val);
-      _setup();
+      tasks = taskService.getTasks(userId);
     });
   }
 }
