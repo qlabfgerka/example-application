@@ -9,6 +9,6 @@ class User {
   User.withId(this.id, this.tasks);
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User.withId(json['id'], json['tasks']);
+    return User.withId(json['id'], json['tasks'] ?? []);
   }
 }

@@ -18,7 +18,7 @@ class App extends StatelessWidget {
 
       switch (settings.name) {
         case '/':
-          screen = Home();
+          screen = const Home();
           break;
         default:
           return null;
