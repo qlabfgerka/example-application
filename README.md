@@ -10,6 +10,9 @@ When a user visits the frontend application a user entry in the database is crea
 #### Angular
 Enter the `frontends/angular-frontend` directory and run `ng serve`
 
+#### Flutter
+Open flutter in VS Code and start debugging or `flutter run`
+
 ### Backends
 
 #### NestJS
