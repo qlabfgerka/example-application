@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/models/task/task.dart';
+import 'package:flutter_frontend/screens/edit_task/edit_task.dart';
 import 'package:flutter_frontend/services/task/task.service.dart';
 import 'package:flutter_frontend/services/user/user.service.dart';
 import 'package:flutter_frontend/widgets/task_card.dart';
@@ -19,6 +20,7 @@ class _HomeState extends State<Home> {
   final UserService userService = UserService();
   late int userId;
   Future<List<Task>>? tasks;
+  Task? _edit;
 
   @override
   void initState() {
@@ -34,12 +36,13 @@ class _HomeState extends State<Home> {
         title: const Text('Tasks'),
       ),
       body: Column(children: [
-        TaskForm((val) => onCreateTask(val)),
+        TaskForm((val) => onCreateTask(val), _edit),
         FutureBuilder<List<Task>>(
           future: tasks,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return TaskCard(snapshot, (val) => onDeletePress(val));
+              return TaskCard(snapshot, (val) => onDeletePress(val),
+                  (val) => onEditPress(val));
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
@@ -62,6 +65,12 @@ class _HomeState extends State<Home> {
   void onDeletePress(val) {
     taskService.removeTask(val);
     getTasks();
+  }
+
+  void onEditPress(val) {
+    Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditTask(task: val)))
+        .then((_) => getTasks());
   }
 
   void onCreateTask(val) {

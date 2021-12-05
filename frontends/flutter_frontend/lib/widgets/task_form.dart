@@ -2,12 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/models/task/task.dart';
 
-typedef void TaskCallback(Task task);
+typedef TaskCallback = void Function(Task task);
 
 class TaskForm extends StatefulWidget {
-  TaskCallback _callback;
+  final TaskCallback _callback;
+  final Task? _edit;
 
-  TaskForm(this._callback);
+  const TaskForm(this._callback, this._edit, {Key? key}) : super(key: key);
 
   @override
   State<TaskForm> createState() => _TaskFormState();
@@ -37,6 +38,7 @@ class _TaskFormState extends State<TaskForm> {
                     return "Enter a task title.";
                   }
                 },
+                initialValue: widget._edit != null ? widget._edit!.title : '',
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Task title',
@@ -50,6 +52,8 @@ class _TaskFormState extends State<TaskForm> {
                   return "Enter a task description.";
                 }
               },
+              initialValue:
+                  widget._edit != null ? widget._edit!.description : '',
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Task description',
@@ -61,10 +65,13 @@ class _TaskFormState extends State<TaskForm> {
                   final form = _formKey.currentState;
                   if (form!.validate()) {
                     form.save();
+                    if (widget._edit != null) {
+                      _task.id = widget._edit!.id;
+                    }
                     widget._callback(_task);
                   }
                 },
-                child: const Text("CREATE"))
+                child: Text(widget._edit != null ? "EDIT" : "CREATE"))
           ],
         ),
       ),

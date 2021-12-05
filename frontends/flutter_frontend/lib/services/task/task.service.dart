@@ -28,9 +28,13 @@ class TaskService {
         body: json.encode(taskId));
   }
 
-  Future<Task> editTask(int taskId) async {
-    final response =
-        await http.put(Uri.parse('$hostname/task'), body: json.encode(taskId));
+  Future<Task> editTask(Task task) async {
+    Map<String, String> customHeaders = {"content-type": "application/json"};
+    final body = {};
+    body['task'] = task;
+
+    final response = await http.put(Uri.parse('$hostname/task'),
+        headers: customHeaders, body: json.encode(body));
 
     return handleResponse(response);
   }
@@ -47,7 +51,7 @@ class TaskService {
   }
 
   Task handleResponse(http.Response response) {
-    if (response.statusCode == 201) {
+    if (response.statusCode == 201 || response.statusCode == 200) {
       return Task.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load Task');

@@ -2,13 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_frontend/models/task/task.dart';
 
-typedef void IntCallback(int val);
+typedef IntCallback = void Function(int val);
+typedef TaskCallback = void Function(Task task);
 
 class TaskCard extends StatelessWidget {
   final AsyncSnapshot<List<Task>> _tasks;
-  final IntCallback callback;
+  final IntCallback _deleteCallback;
+  final TaskCallback _editCallback;
 
-  TaskCard(this._tasks, this.callback);
+  const TaskCard(this._tasks, this._deleteCallback, this._editCallback,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +36,15 @@ class TaskCard extends StatelessWidget {
                     children: <Widget>[
                       TextButton(
                         child: const Text('EDIT'),
-                        onPressed: () {/* ... */},
+                        onPressed: () {
+                          _editCallback(_tasks.data![index]);
+                        },
                       ),
                       const SizedBox(width: 8),
                       TextButton(
                         child: const Text('DELETE'),
                         onPressed: () {
-                          callback(_tasks.data![index].id as int);
+                          _deleteCallback(_tasks.data![index].id as int);
                         },
                       ),
                       const SizedBox(width: 8),
