@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  postgres-service:
+    image: postgres
+    container_name: postgres-service
+
+    volumes:
+      - ./data:/Library/PostgreSQL/14/data
+
+    ports:
+      - 5000:5432
+
+    environment:
+      - POSTGRES_DB=...
+      - POSTGRES_USER=...
+      - POSTGRES_PASSWORD=...
+
+  spring-service:
+    build: ./backends/spring-boot-backend
+    container_name: spring-service
+
+    environment:
+      - DB_SERVER=postgres-service
+      - POSTGRES_DB=...
+      - POSTGRES_USER=...
+      - POSTGRES_PASSWORD=...
+    
+    ports: 
+      - 3000:3000
+
+    links:
+      - postgres-service
+
+  angular-service:
+    build: ./frontends/angular-frontend
+    container_name: angular-service
+
+    ports:
+      - 4200:80
+
+    links:
+      - spring-service
